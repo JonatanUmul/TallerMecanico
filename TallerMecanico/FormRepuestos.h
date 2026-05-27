@@ -164,7 +164,9 @@ namespace TallerMecanico {
 			this->dgvRepuestos->AllowUserToDeleteRows = false;
 			this->dgvRepuestos->SelectionMode = System::Windows::Forms::DataGridViewSelectionMode::FullRowSelect;
 			this->dgvRepuestos->MultiSelect = false;
-			this->dgvRepuestos->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::Fill;
+			this->dgvRepuestos->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::DisplayedCells;
+			this->dgvRepuestos->AutoSizeRowsMode = System::Windows::Forms::DataGridViewAutoSizeRowsMode::DisplayedCells;
+			this->dgvRepuestos->ScrollBars = System::Windows::Forms::ScrollBars::Both;
 			this->dgvRepuestos->Anchor = (System::Windows::Forms::AnchorStyles)((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) | System::Windows::Forms::AnchorStyles::Left) | System::Windows::Forms::AnchorStyles::Right));
 			this->dgvRepuestos->CellClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &FormRepuestos::dgvRepuestos_CellClick);
 
@@ -206,6 +208,16 @@ namespace TallerMecanico {
 			return valor->ToString();
 		}
 
+		void FormatearTabla()
+		{
+			if (dgvRepuestos->Columns->Contains("id_repuesto")) dgvRepuestos->Columns["id_repuesto"]->Visible = false;
+			if (dgvRepuestos->Columns->Contains("nombre")) dgvRepuestos->Columns["nombre"]->HeaderText = "Nombre";
+			if (dgvRepuestos->Columns->Contains("marca")) dgvRepuestos->Columns["marca"]->HeaderText = "Marca";
+			if (dgvRepuestos->Columns->Contains("precio")) dgvRepuestos->Columns["precio"]->HeaderText = "Precio";
+			if (dgvRepuestos->Columns->Contains("stock")) dgvRepuestos->Columns["stock"]->HeaderText = "Stock";
+			dgvRepuestos->AutoResizeColumns(System::Windows::Forms::DataGridViewAutoSizeColumnsMode::DisplayedCells);
+		}
+
 		bool ValidarCampos()
 		{
 			if (String::IsNullOrWhiteSpace(txtNombre->Text) ||
@@ -241,6 +253,7 @@ namespace TallerMecanico {
 				DataTable^ dt = gcnew DataTable();
 				da->Fill(dt);
 				dgvRepuestos->DataSource = dt;
+				FormatearTabla();
 			}
 			catch (Exception^ ex)
 			{
@@ -368,6 +381,7 @@ namespace TallerMecanico {
 				DataTable^ dt = gcnew DataTable();
 				da->Fill(dt);
 				dgvRepuestos->DataSource = dt;
+				FormatearTabla();
 			}
 			catch (Exception^ ex)
 			{
@@ -404,4 +418,3 @@ namespace TallerMecanico {
 		}
 	};
 }
-

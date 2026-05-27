@@ -195,7 +195,9 @@ namespace TallerMecanico {
 			this->dgvVehiculos->AllowUserToDeleteRows = false;
 			this->dgvVehiculos->SelectionMode = System::Windows::Forms::DataGridViewSelectionMode::FullRowSelect;
 			this->dgvVehiculos->MultiSelect = false;
-			this->dgvVehiculos->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::Fill;
+			this->dgvVehiculos->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::DisplayedCells;
+			this->dgvVehiculos->AutoSizeRowsMode = System::Windows::Forms::DataGridViewAutoSizeRowsMode::DisplayedCells;
+			this->dgvVehiculos->ScrollBars = System::Windows::Forms::ScrollBars::Both;
 			this->dgvVehiculos->Anchor = (System::Windows::Forms::AnchorStyles)((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) | System::Windows::Forms::AnchorStyles::Left) | System::Windows::Forms::AnchorStyles::Right));
 			this->dgvVehiculos->CellClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &FormVehiculos::dgvVehiculos_CellClick);
 
@@ -242,6 +244,20 @@ namespace TallerMecanico {
 			Object^ valor = fila->Cells[columna]->Value;
 			if (valor == nullptr || valor == System::DBNull::Value) return "";
 			return valor->ToString();
+		}
+
+		void FormatearTabla()
+		{
+			if (dgvVehiculos->Columns->Contains("id_vehiculo")) dgvVehiculos->Columns["id_vehiculo"]->Visible = false;
+			if (dgvVehiculos->Columns->Contains("id_cliente")) dgvVehiculos->Columns["id_cliente"]->Visible = false;
+			if (dgvVehiculos->Columns->Contains("cliente")) dgvVehiculos->Columns["cliente"]->HeaderText = "Cliente";
+			if (dgvVehiculos->Columns->Contains("placa")) dgvVehiculos->Columns["placa"]->HeaderText = "Placa";
+			if (dgvVehiculos->Columns->Contains("n_chasis")) dgvVehiculos->Columns["n_chasis"]->HeaderText = "Chasis";
+			if (dgvVehiculos->Columns->Contains("marca")) dgvVehiculos->Columns["marca"]->HeaderText = "Marca";
+			if (dgvVehiculos->Columns->Contains("modelo")) dgvVehiculos->Columns["modelo"]->HeaderText = "Modelo";
+			if (dgvVehiculos->Columns->Contains("tipo")) dgvVehiculos->Columns["tipo"]->HeaderText = "Tipo";
+			if (dgvVehiculos->Columns->Contains("estado")) dgvVehiculos->Columns["estado"]->HeaderText = "Estado";
+			dgvVehiculos->AutoResizeColumns(System::Windows::Forms::DataGridViewAutoSizeColumnsMode::DisplayedCells);
 		}
 
 		void CargarClientes()
@@ -294,6 +310,7 @@ namespace TallerMecanico {
 				DataTable^ dt = gcnew DataTable();
 				da->Fill(dt);
 				dgvVehiculos->DataSource = dt;
+				FormatearTabla();
 			}
 			catch (Exception^ ex)
 			{
@@ -435,6 +452,7 @@ namespace TallerMecanico {
 				DataTable^ dt = gcnew DataTable();
 				da->Fill(dt);
 				dgvVehiculos->DataSource = dt;
+				FormatearTabla();
 			}
 			catch (Exception^ ex)
 			{
@@ -477,4 +495,3 @@ namespace TallerMecanico {
 		}
 	};
 }
-

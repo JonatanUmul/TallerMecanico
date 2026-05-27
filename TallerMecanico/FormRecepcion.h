@@ -5,6 +5,9 @@ namespace TallerMecanico {
 
 	using namespace System;
 	using namespace System::Data;
+	using namespace System::IO;
+	using namespace System::Net;
+	using namespace System::Text;
 	using namespace MySql::Data::MySqlClient;
 
 	public ref class FormRecepcion : public System::Windows::Forms::Form
@@ -31,6 +34,8 @@ namespace TallerMecanico {
 		System::ComponentModel::Container^ components;
 		System::Windows::Forms::Panel^ panelIzquierdo;
 		System::Windows::Forms::Panel^ panelDerecho;
+		System::Windows::Forms::GroupBox^ grpRecepcion;
+		System::Windows::Forms::GroupBox^ grpDetalleTrabajo;
 
 		System::Windows::Forms::TextBox^ txtIdServicio;
 		System::Windows::Forms::ComboBox^ cmbCliente;
@@ -82,6 +87,8 @@ namespace TallerMecanico {
 			this->components = gcnew System::ComponentModel::Container();
 			this->panelIzquierdo = gcnew System::Windows::Forms::Panel();
 			this->panelDerecho = gcnew System::Windows::Forms::Panel();
+			this->grpRecepcion = gcnew System::Windows::Forms::GroupBox();
+			this->grpDetalleTrabajo = gcnew System::Windows::Forms::GroupBox();
 			this->txtIdServicio = gcnew System::Windows::Forms::TextBox();
 			this->cmbCliente = gcnew System::Windows::Forms::ComboBox();
 			this->cmbVehiculo = gcnew System::Windows::Forms::ComboBox();
@@ -135,6 +142,14 @@ namespace TallerMecanico {
 			this->panelIzquierdo->AutoScroll = true;
 			this->panelDerecho->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->panelDerecho->Padding = System::Windows::Forms::Padding(20);
+
+			this->grpRecepcion->Text = L"Datos de recepcion";
+			this->grpRecepcion->Location = System::Drawing::Point(20, 15);
+			this->grpRecepcion->Size = System::Drawing::Size(480, 455);
+
+			this->grpDetalleTrabajo->Text = L"Detalle del trabajo";
+			this->grpDetalleTrabajo->Location = System::Drawing::Point(20, 470);
+			this->grpDetalleTrabajo->Size = System::Drawing::Size(480, 330);
 
 			this->txtIdServicio->Visible = false;
 			this->lblTitulo->Text = L"Recepcion de Vehiculo";
@@ -289,7 +304,9 @@ namespace TallerMecanico {
 			this->dgvServicios->AllowUserToDeleteRows = false;
 			this->dgvServicios->SelectionMode = System::Windows::Forms::DataGridViewSelectionMode::FullRowSelect;
 			this->dgvServicios->MultiSelect = false;
-			this->dgvServicios->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::Fill;
+			this->dgvServicios->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::DisplayedCells;
+			this->dgvServicios->AutoSizeRowsMode = System::Windows::Forms::DataGridViewAutoSizeRowsMode::DisplayedCells;
+			this->dgvServicios->ScrollBars = System::Windows::Forms::ScrollBars::Both;
 			this->dgvServicios->Anchor = (System::Windows::Forms::AnchorStyles)(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left) | System::Windows::Forms::AnchorStyles::Right));
 			this->dgvServicios->CellClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &FormRecepcion::dgvServicios_CellClick);
 
@@ -300,10 +317,14 @@ namespace TallerMecanico {
 			this->dgvDetalle->AllowUserToDeleteRows = false;
 			this->dgvDetalle->SelectionMode = System::Windows::Forms::DataGridViewSelectionMode::FullRowSelect;
 			this->dgvDetalle->MultiSelect = false;
-			this->dgvDetalle->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::Fill;
+			this->dgvDetalle->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::DisplayedCells;
+			this->dgvDetalle->AutoSizeRowsMode = System::Windows::Forms::DataGridViewAutoSizeRowsMode::DisplayedCells;
+			this->dgvDetalle->ScrollBars = System::Windows::Forms::ScrollBars::Both;
 			this->dgvDetalle->Anchor = (System::Windows::Forms::AnchorStyles)((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) | System::Windows::Forms::AnchorStyles::Left) | System::Windows::Forms::AnchorStyles::Right));
 
 			this->panelIzquierdo->Controls->Add(this->txtIdServicio);
+			this->panelIzquierdo->Controls->Add(this->grpRecepcion);
+			this->panelIzquierdo->Controls->Add(this->grpDetalleTrabajo);
 			this->panelIzquierdo->Controls->Add(this->lblTitulo);
 			this->panelIzquierdo->Controls->Add(this->lblCliente);
 			this->panelIzquierdo->Controls->Add(this->cmbCliente);
@@ -344,6 +365,8 @@ namespace TallerMecanico {
 			this->panelDerecho->Controls->Add(this->dgvDetalle);
 			this->Controls->Add(this->panelDerecho);
 			this->Controls->Add(this->panelIzquierdo);
+			this->grpRecepcion->SendToBack();
+			this->grpDetalleTrabajo->SendToBack();
 			this->ResumeLayout(false);
 		}
 #pragma endregion
@@ -365,6 +388,162 @@ namespace TallerMecanico {
 			Object^ valor = fila->Cells[columna]->Value;
 			if (valor == nullptr || valor == System::DBNull::Value) return "";
 			return valor->ToString();
+		}
+
+		void OcultarColumna(System::Windows::Forms::DataGridView^ grid, String^ columna)
+		{
+			if (grid->Columns->Contains(columna))
+			{
+				grid->Columns[columna]->Visible = false;
+			}
+		}
+
+		void Encabezado(System::Windows::Forms::DataGridView^ grid, String^ columna, String^ texto)
+		{
+			if (grid->Columns->Contains(columna))
+			{
+				grid->Columns[columna]->HeaderText = texto;
+			}
+		}
+
+		void FormatearServicios()
+		{
+			OcultarColumna(dgvServicios, "id_servicio");
+			OcultarColumna(dgvServicios, "id_cliente");
+			OcultarColumna(dgvServicios, "id_vehiculo");
+			OcultarColumna(dgvServicios, "id_tipo_servicio");
+			OcultarColumna(dgvServicios, "id_mecanico");
+			Encabezado(dgvServicios, "cliente", "Cliente");
+			Encabezado(dgvServicios, "placa", "Placa");
+			Encabezado(dgvServicios, "servicio", "Servicio");
+			Encabezado(dgvServicios, "mecanico", "Mecanico");
+			Encabezado(dgvServicios, "fecha", "Fecha");
+			Encabezado(dgvServicios, "kilometraje", "Kilometraje");
+			Encabezado(dgvServicios, "estado", "Estado");
+			Encabezado(dgvServicios, "total", "Total");
+			Encabezado(dgvServicios, "descripcion", "Problema reportado");
+			dgvServicios->AutoResizeColumns(System::Windows::Forms::DataGridViewAutoSizeColumnsMode::DisplayedCells);
+		}
+
+		void FormatearDetalle()
+		{
+			OcultarColumna(dgvDetalle, "id_detalle");
+			Encabezado(dgvDetalle, "repuesto", "Repuesto");
+			Encabezado(dgvDetalle, "cantidad", "Cantidad");
+			Encabezado(dgvDetalle, "descripcion_trabajo", "Trabajo realizado");
+			Encabezado(dgvDetalle, "costo_mano_obra", "Mano de obra");
+			Encabezado(dgvDetalle, "observacion", "Observacion");
+			Encabezado(dgvDetalle, "subtotal", "Subtotal");
+			dgvDetalle->AutoResizeColumns(System::Windows::Forms::DataGridViewAutoSizeColumnsMode::DisplayedCells);
+		}
+
+		String^ EscaparJson(String^ valor)
+		{
+			if (valor == nullptr) return "";
+			return valor->Replace("\\", "\\\\")->Replace("\"", "\\\"")->Replace("\r", " ")->Replace("\n", " ");
+		}
+
+		String^ FormatearNumeroWhatsApp(String^ telefono)
+		{
+			StringBuilder^ limpio = gcnew StringBuilder();
+			if (telefono != nullptr)
+			{
+				for each (Char c in telefono)
+				{
+					if (Char::IsDigit(c))
+					{
+						limpio->Append(c);
+					}
+				}
+			}
+
+			String^ numero = limpio->ToString();
+			if (numero->Length == 8)
+			{
+				numero = "502" + numero;
+			}
+			if (!numero->EndsWith("@s.whatsapp.net"))
+			{
+				numero += "@s.whatsapp.net";
+			}
+			return numero;
+		}
+
+		String^ ObtenerEstadoAnterior(MySqlConnection^ cn, int idServicio)
+		{
+			MySqlCommand^ cmd = gcnew MySqlCommand("SELECT estado FROM servicios WHERE id_servicio=@id", cn);
+			cmd->Parameters->AddWithValue("@id", idServicio);
+			Object^ valor = cmd->ExecuteScalar();
+			if (valor == nullptr || valor == System::DBNull::Value) return "";
+			return valor->ToString();
+		}
+
+		void EnviarWhatsAppListo(int idServicio)
+		{
+			try
+			{
+				MySqlConnection^ cn = Conexion::ObtenerConexion();
+				try
+				{
+					cn->Open();
+					String^ sql =
+						"SELECT c.nombre, c.telefono, v.placa, s.total "
+						"FROM servicios s INNER JOIN clientes c ON s.id_cliente=c.id_cliente "
+						"INNER JOIN vehiculos v ON s.id_vehiculo=v.id_vehiculo "
+						"WHERE s.id_servicio=@id";
+					MySqlCommand^ cmd = gcnew MySqlCommand(sql, cn);
+					cmd->Parameters->AddWithValue("@id", idServicio);
+					MySqlDataReader^ dr = cmd->ExecuteReader();
+					if (!dr->Read())
+					{
+						return;
+					}
+
+					String^ cliente = dr["nombre"]->ToString();
+					String^ telefono = dr["telefono"]->ToString();
+					String^ placa = dr["placa"]->ToString();
+					Decimal totalDecimal = Convert::ToDecimal(dr["total"]);
+					String^ total = totalDecimal.ToString("0.00");
+					dr->Close();
+
+					if (String::IsNullOrWhiteSpace(telefono))
+					{
+						System::Windows::Forms::MessageBox::Show("La orden esta LISTA, pero el cliente no tiene telefono para WhatsApp.");
+						return;
+					}
+
+					String^ url = "https://evolutioneco.ecofiltro.net/message/sendText/jonatan_perosonal";
+					String^ apiKey = "59B80597F3B1-4A32-BCC7-C256251BDF9E";
+					String^ numero = FormatearNumeroWhatsApp(telefono);
+					String^ texto = "Hola " + cliente + ", le informamos que su vehiculo placa " + placa +
+						" ya esta LISTO para entrega. Total: Q" + total + ". Taller Mecanico.";
+					String^ body = "{\"number\":\"" + EscaparJson(numero) + "\",\"text\":\"" + EscaparJson(texto) + "\"}";
+
+					ServicePointManager::SecurityProtocol = SecurityProtocolType::Tls12;
+					HttpWebRequest^ request = (HttpWebRequest^)WebRequest::Create(url);
+					request->Method = "POST";
+					request->ContentType = "application/json";
+					request->Headers->Add("apikey", apiKey);
+
+					array<Byte>^ bytes = Encoding::UTF8->GetBytes(body);
+					request->ContentLength = bytes->Length;
+					Stream^ stream = request->GetRequestStream();
+					stream->Write(bytes, 0, bytes->Length);
+					stream->Close();
+
+					HttpWebResponse^ response = (HttpWebResponse^)request->GetResponse();
+					response->Close();
+					System::Windows::Forms::MessageBox::Show("WhatsApp enviado al cliente.");
+				}
+				finally
+				{
+					if (cn->State == ConnectionState::Open) cn->Close();
+				}
+			}
+			catch (Exception^ ex)
+			{
+				System::Windows::Forms::MessageBox::Show("Estado actualizado, pero no se pudo enviar WhatsApp: " + ex->Message);
+			}
 		}
 
 		void CargarCombo(System::Windows::Forms::ComboBox^ combo, String^ sql, String^ display, String^ value)
@@ -460,6 +639,7 @@ namespace TallerMecanico {
 				DataTable^ dt = gcnew DataTable();
 				da->Fill(dt);
 				dgvServicios->DataSource = dt;
+				FormatearServicios();
 			}
 			catch (Exception^ ex)
 			{
@@ -489,6 +669,7 @@ namespace TallerMecanico {
 				DataTable^ dt = gcnew DataTable();
 				da->Fill(dt);
 				dgvDetalle->DataSource = dt;
+				FormatearDetalle();
 			}
 			catch (Exception^ ex)
 			{
@@ -648,22 +829,28 @@ namespace TallerMecanico {
 			try
 			{
 				cn->Open();
+				int idServicio = Convert::ToInt32(txtIdServicio->Text);
+				String^ estadoAnterior = ObtenerEstadoAnterior(cn, idServicio);
 				String^ sql =
 					"UPDATE servicios SET estado=@estado, fecha_entrega=CASE WHEN @estado='ENTREGADO' THEN NOW() ELSE fecha_entrega END "
 					"WHERE id_servicio=@id";
 				MySqlCommand^ cmd = gcnew MySqlCommand(sql, cn);
 				cmd->Parameters->AddWithValue("@estado", cmbEstado->Text);
-				cmd->Parameters->AddWithValue("@id", Convert::ToInt32(txtIdServicio->Text));
+				cmd->Parameters->AddWithValue("@id", idServicio);
 				cmd->ExecuteNonQuery();
 
 				String^ sqlVehiculo = "UPDATE vehiculos v INNER JOIN servicios s ON v.id_vehiculo=s.id_vehiculo SET v.estado=@estado WHERE s.id_servicio=@id";
 				MySqlCommand^ cmdVehiculo = gcnew MySqlCommand(sqlVehiculo, cn);
 				cmdVehiculo->Parameters->AddWithValue("@estado", cmbEstado->Text);
-				cmdVehiculo->Parameters->AddWithValue("@id", Convert::ToInt32(txtIdServicio->Text));
+				cmdVehiculo->Parameters->AddWithValue("@id", idServicio);
 				cmdVehiculo->ExecuteNonQuery();
 
 				System::Windows::Forms::MessageBox::Show("Estado actualizado correctamente.");
 				ListarServicios(txtBuscar->Text);
+				if (cmbEstado->Text == "LISTO" && estadoAnterior != "LISTO")
+				{
+					EnviarWhatsAppListo(idServicio);
+				}
 			}
 			catch (Exception^ ex)
 			{
@@ -759,4 +946,3 @@ namespace TallerMecanico {
 		}
 	};
 }
-

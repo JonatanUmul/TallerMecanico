@@ -138,6 +138,7 @@
     <ClInclude Include="FormTipoServicio.h" />
     <ClInclude Include="FormRecepcion.h" />
     <ClInclude Include="FormHistorial.h" />
+    <ClInclude Include="FormFacturacion.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="FormClientes.resx">

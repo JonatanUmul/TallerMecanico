@@ -6,6 +6,7 @@
 #include "FormTipoServicio.h"
 #include "FormRecepcion.h"
 #include "FormHistorial.h"
+#include "FormFacturacion.h"
 
 namespace TallerMecanico {
 
@@ -39,6 +40,7 @@ namespace TallerMecanico {
 		System::Windows::Forms::Button^ btnRepuestos;
 		System::Windows::Forms::Button^ btnTipoServicio;
 		System::Windows::Forms::Button^ btnRecepcion;
+		System::Windows::Forms::Button^ btnFacturacion;
 		System::Windows::Forms::Button^ btnHistorial;
 		System::Windows::Forms::Button^ btnSalir;
 
@@ -53,6 +55,7 @@ namespace TallerMecanico {
 			this->btnRepuestos = gcnew System::Windows::Forms::Button();
 			this->btnTipoServicio = gcnew System::Windows::Forms::Button();
 			this->btnRecepcion = gcnew System::Windows::Forms::Button();
+			this->btnFacturacion = gcnew System::Windows::Forms::Button();
 			this->btnHistorial = gcnew System::Windows::Forms::Button();
 			this->btnSalir = gcnew System::Windows::Forms::Button();
 			this->SuspendLayout();
@@ -104,8 +107,13 @@ namespace TallerMecanico {
 			this->btnHistorial->Size = System::Drawing::Size(240, 50);
 			this->btnHistorial->Click += gcnew System::EventHandler(this, &MenuPrincipal::btnHistorial_Click);
 
+			this->btnFacturacion->Text = L"Facturacion";
+			this->btnFacturacion->Location = System::Drawing::Point(390, 335);
+			this->btnFacturacion->Size = System::Drawing::Size(240, 50);
+			this->btnFacturacion->Click += gcnew System::EventHandler(this, &MenuPrincipal::btnFacturacion_Click);
+
 			this->btnSalir->Text = L"Salir";
-			this->btnSalir->Location = System::Drawing::Point(390, 335);
+			this->btnSalir->Location = System::Drawing::Point(240, 405);
 			this->btnSalir->Size = System::Drawing::Size(240, 50);
 			this->btnSalir->Click += gcnew System::EventHandler(this, &MenuPrincipal::btnSalir_Click);
 
@@ -116,6 +124,7 @@ namespace TallerMecanico {
 			this->Controls->Add(this->btnRepuestos);
 			this->Controls->Add(this->btnTipoServicio);
 			this->Controls->Add(this->btnRecepcion);
+			this->Controls->Add(this->btnFacturacion);
 			this->Controls->Add(this->btnHistorial);
 			this->Controls->Add(this->btnSalir);
 			this->ResumeLayout(false);
@@ -165,10 +174,15 @@ namespace TallerMecanico {
 			catch (Exception^ ex) { MessageBox::Show("Error al abrir Historial: " + ex->Message); }
 		}
 
+		System::Void btnFacturacion_Click(System::Object^ sender, System::EventArgs^ e)
+		{
+			try { FormFacturacion^ frm = gcnew FormFacturacion(); frm->ShowDialog(); }
+			catch (Exception^ ex) { MessageBox::Show("Error al abrir Facturacion: " + ex->Message); }
+		}
+
 		System::Void btnSalir_Click(System::Object^ sender, System::EventArgs^ e)
 		{
 			Application::Exit();
 		}
 	};
 }
-

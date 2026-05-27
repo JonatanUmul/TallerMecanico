@@ -184,7 +184,9 @@ namespace TallerMecanico {
 			this->dgvClientes->AllowUserToDeleteRows = false;
 			this->dgvClientes->SelectionMode = System::Windows::Forms::DataGridViewSelectionMode::FullRowSelect;
 			this->dgvClientes->MultiSelect = false;
-			this->dgvClientes->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::Fill;
+			this->dgvClientes->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::DisplayedCells;
+			this->dgvClientes->AutoSizeRowsMode = System::Windows::Forms::DataGridViewAutoSizeRowsMode::DisplayedCells;
+			this->dgvClientes->ScrollBars = System::Windows::Forms::ScrollBars::Both;
 			this->dgvClientes->Anchor = (System::Windows::Forms::AnchorStyles)((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) | System::Windows::Forms::AnchorStyles::Left) | System::Windows::Forms::AnchorStyles::Right));
 			this->dgvClientes->CellClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &FormClientes::dgvClientes_CellClick);
 
@@ -236,6 +238,18 @@ namespace TallerMecanico {
 			return Convert::ToInt32(txtEdad->Text);
 		}
 
+		void FormatearTabla()
+		{
+			if (dgvClientes->Columns->Contains("id_cliente")) dgvClientes->Columns["id_cliente"]->Visible = false;
+			if (dgvClientes->Columns->Contains("nit")) dgvClientes->Columns["nit"]->HeaderText = "NIT";
+			if (dgvClientes->Columns->Contains("nombre")) dgvClientes->Columns["nombre"]->HeaderText = "Nombre";
+			if (dgvClientes->Columns->Contains("edad")) dgvClientes->Columns["edad"]->HeaderText = "Edad";
+			if (dgvClientes->Columns->Contains("direccion")) dgvClientes->Columns["direccion"]->HeaderText = "Direccion";
+			if (dgvClientes->Columns->Contains("correo")) dgvClientes->Columns["correo"]->HeaderText = "Correo";
+			if (dgvClientes->Columns->Contains("telefono")) dgvClientes->Columns["telefono"]->HeaderText = "Telefono";
+			dgvClientes->AutoResizeColumns(System::Windows::Forms::DataGridViewAutoSizeColumnsMode::DisplayedCells);
+		}
+
 		void ListarClientes()
 		{
 			MySqlConnection^ cn = Conexion::ObtenerConexion();
@@ -247,6 +261,7 @@ namespace TallerMecanico {
 				DataTable^ dt = gcnew DataTable();
 				da->Fill(dt);
 				dgvClientes->DataSource = dt;
+				FormatearTabla();
 			}
 			catch (Exception^ ex)
 			{
@@ -407,6 +422,7 @@ namespace TallerMecanico {
 				DataTable^ dt = gcnew DataTable();
 				da->Fill(dt);
 				dgvClientes->DataSource = dt;
+				FormatearTabla();
 			}
 			catch (Exception^ ex)
 			{
@@ -445,4 +461,3 @@ namespace TallerMecanico {
 		}
 	};
 }
-

@@ -144,7 +144,9 @@ namespace TallerMecanico {
 			this->dgvTiposServicio->AllowUserToDeleteRows = false;
 			this->dgvTiposServicio->SelectionMode = System::Windows::Forms::DataGridViewSelectionMode::FullRowSelect;
 			this->dgvTiposServicio->MultiSelect = false;
-			this->dgvTiposServicio->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::Fill;
+			this->dgvTiposServicio->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::DisplayedCells;
+			this->dgvTiposServicio->AutoSizeRowsMode = System::Windows::Forms::DataGridViewAutoSizeRowsMode::DisplayedCells;
+			this->dgvTiposServicio->ScrollBars = System::Windows::Forms::ScrollBars::Both;
 			this->dgvTiposServicio->Anchor = (System::Windows::Forms::AnchorStyles)((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) | System::Windows::Forms::AnchorStyles::Left) | System::Windows::Forms::AnchorStyles::Right));
 			this->dgvTiposServicio->CellClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &FormTipoServicio::dgvTiposServicio_CellClick);
 
@@ -182,6 +184,14 @@ namespace TallerMecanico {
 			return valor->ToString();
 		}
 
+		void FormatearTabla()
+		{
+			if (dgvTiposServicio->Columns->Contains("id_tipo_servicio")) dgvTiposServicio->Columns["id_tipo_servicio"]->Visible = false;
+			if (dgvTiposServicio->Columns->Contains("tipo")) dgvTiposServicio->Columns["tipo"]->HeaderText = "Servicio";
+			if (dgvTiposServicio->Columns->Contains("precio")) dgvTiposServicio->Columns["precio"]->HeaderText = "Precio";
+			dgvTiposServicio->AutoResizeColumns(System::Windows::Forms::DataGridViewAutoSizeColumnsMode::DisplayedCells);
+		}
+
 		bool ValidarCampos()
 		{
 			if (String::IsNullOrWhiteSpace(txtTipo->Text) || String::IsNullOrWhiteSpace(txtPrecio->Text))
@@ -209,6 +219,7 @@ namespace TallerMecanico {
 				DataTable^ dt = gcnew DataTable();
 				da->Fill(dt);
 				dgvTiposServicio->DataSource = dt;
+				FormatearTabla();
 			}
 			catch (Exception^ ex)
 			{
@@ -330,6 +341,7 @@ namespace TallerMecanico {
 				DataTable^ dt = gcnew DataTable();
 				da->Fill(dt);
 				dgvTiposServicio->DataSource = dt;
+				FormatearTabla();
 			}
 			catch (Exception^ ex)
 			{
@@ -364,4 +376,3 @@ namespace TallerMecanico {
 		}
 	};
 }
-

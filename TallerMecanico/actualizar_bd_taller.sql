@@ -14,3 +14,16 @@ ADD COLUMN IF NOT EXISTS descripcion_trabajo VARCHAR(200) NULL,
 ADD COLUMN IF NOT EXISTS costo_mano_obra DECIMAL(10,2) DEFAULT 0.00,
 ADD COLUMN IF NOT EXISTS fecha DATETIME DEFAULT CURRENT_TIMESTAMP;
 
+CREATE TABLE IF NOT EXISTS facturas (
+    id_factura INT AUTO_INCREMENT PRIMARY KEY,
+    id_servicio INT NOT NULL,
+    fecha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    subtotal DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    descuento DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    total DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    metodo_pago VARCHAR(50) NOT NULL,
+    estado VARCHAR(30) NOT NULL DEFAULT 'EMITIDA',
+    observacion TEXT NULL,
+    UNIQUE KEY uq_factura_servicio (id_servicio),
+    FOREIGN KEY (id_servicio) REFERENCES servicios(id_servicio)
+);

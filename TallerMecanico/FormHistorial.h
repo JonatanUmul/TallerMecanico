@@ -55,10 +55,10 @@ namespace TallerMecanico {
 			this->SuspendLayout();
 
 			this->Text = L"Historial de Servicios";
-			this->ClientSize = System::Drawing::Size(1180, 700);
-			this->MinimumSize = System::Drawing::Size(980, 560);
+			this->ClientSize = System::Drawing::Size(1150, 680);
+			this->MinimumSize = System::Drawing::Size(1000, 560);
 			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
-			this->WindowState = System::Windows::Forms::FormWindowState::Maximized;
+			this->WindowState = System::Windows::Forms::FormWindowState::Normal;
 
 			this->panelSuperior->Dock = System::Windows::Forms::DockStyle::Top;
 			this->panelSuperior->Height = 125;
@@ -77,25 +77,25 @@ namespace TallerMecanico {
 			this->lblBuscar->AutoSize = true;
 
 			this->txtBuscar->Location = System::Drawing::Point(300, 66);
-			this->txtBuscar->Size = System::Drawing::Size(430, 25);
-			this->txtBuscar->Anchor = (System::Windows::Forms::AnchorStyles)(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left) | System::Windows::Forms::AnchorStyles::Right));
+			this->txtBuscar->Size = System::Drawing::Size(410, 25);
+			this->txtBuscar->Anchor = (System::Windows::Forms::AnchorStyles)((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left));
 
 			this->btnBuscar->Text = L"Buscar";
-			this->btnBuscar->Location = System::Drawing::Point(750, 62);
+			this->btnBuscar->Location = System::Drawing::Point(730, 62);
 			this->btnBuscar->Size = System::Drawing::Size(110, 34);
-			this->btnBuscar->Anchor = (System::Windows::Forms::AnchorStyles)((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
+			this->btnBuscar->Anchor = (System::Windows::Forms::AnchorStyles)((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left));
 			this->btnBuscar->Click += gcnew System::EventHandler(this, &FormHistorial::btnBuscar_Click);
 
 			this->btnLimpiar->Text = L"Limpiar";
-			this->btnLimpiar->Location = System::Drawing::Point(870, 62);
+			this->btnLimpiar->Location = System::Drawing::Point(850, 62);
 			this->btnLimpiar->Size = System::Drawing::Size(110, 34);
-			this->btnLimpiar->Anchor = (System::Windows::Forms::AnchorStyles)((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
+			this->btnLimpiar->Anchor = (System::Windows::Forms::AnchorStyles)((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left));
 			this->btnLimpiar->Click += gcnew System::EventHandler(this, &FormHistorial::btnLimpiar_Click);
 
 			this->btnRegresar->Text = L"Regresar al menu";
-			this->btnRegresar->Location = System::Drawing::Point(990, 62);
+			this->btnRegresar->Location = System::Drawing::Point(970, 62);
 			this->btnRegresar->Size = System::Drawing::Size(150, 34);
-			this->btnRegresar->Anchor = (System::Windows::Forms::AnchorStyles)((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
+			this->btnRegresar->Anchor = (System::Windows::Forms::AnchorStyles)((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left));
 			this->btnRegresar->Click += gcnew System::EventHandler(this, &FormHistorial::btnRegresar_Click);
 
 			this->dgvHistorial->Location = System::Drawing::Point(25, 25);
@@ -105,7 +105,9 @@ namespace TallerMecanico {
 			this->dgvHistorial->AllowUserToDeleteRows = false;
 			this->dgvHistorial->SelectionMode = System::Windows::Forms::DataGridViewSelectionMode::FullRowSelect;
 			this->dgvHistorial->MultiSelect = false;
-			this->dgvHistorial->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::Fill;
+			this->dgvHistorial->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::DisplayedCells;
+			this->dgvHistorial->AutoSizeRowsMode = System::Windows::Forms::DataGridViewAutoSizeRowsMode::DisplayedCells;
+			this->dgvHistorial->ScrollBars = System::Windows::Forms::ScrollBars::Both;
 			this->dgvHistorial->Anchor = (System::Windows::Forms::AnchorStyles)(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left) | System::Windows::Forms::AnchorStyles::Right));
 			this->dgvHistorial->CellClick += gcnew System::Windows::Forms::DataGridViewCellEventHandler(this, &FormHistorial::dgvHistorial_CellClick);
 
@@ -116,7 +118,9 @@ namespace TallerMecanico {
 			this->dgvDetalle->AllowUserToDeleteRows = false;
 			this->dgvDetalle->SelectionMode = System::Windows::Forms::DataGridViewSelectionMode::FullRowSelect;
 			this->dgvDetalle->MultiSelect = false;
-			this->dgvDetalle->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::Fill;
+			this->dgvDetalle->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::DisplayedCells;
+			this->dgvDetalle->AutoSizeRowsMode = System::Windows::Forms::DataGridViewAutoSizeRowsMode::DisplayedCells;
+			this->dgvDetalle->ScrollBars = System::Windows::Forms::ScrollBars::Both;
 			this->dgvDetalle->Anchor = (System::Windows::Forms::AnchorStyles)((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom) | System::Windows::Forms::AnchorStyles::Left) | System::Windows::Forms::AnchorStyles::Right));
 
 			this->panelSuperior->Controls->Add(this->lblTitulo);
@@ -146,6 +150,56 @@ namespace TallerMecanico {
 			return valor->ToString();
 		}
 
+		void OcultarColumna(System::Windows::Forms::DataGridView^ grid, String^ columna)
+		{
+			if (grid->Columns->Contains(columna))
+			{
+				grid->Columns[columna]->Visible = false;
+			}
+		}
+
+		void Encabezado(System::Windows::Forms::DataGridView^ grid, String^ columna, String^ texto)
+		{
+			if (grid->Columns->Contains(columna))
+			{
+				grid->Columns[columna]->HeaderText = texto;
+			}
+		}
+
+		void FormatearHistorial()
+		{
+			OcultarColumna(dgvHistorial, "id_servicio");
+			Encabezado(dgvHistorial, "cliente", "Cliente");
+			Encabezado(dgvHistorial, "telefono", "Telefono");
+			Encabezado(dgvHistorial, "placa", "Placa");
+			Encabezado(dgvHistorial, "marca", "Marca");
+			Encabezado(dgvHistorial, "modelo", "Modelo");
+			Encabezado(dgvHistorial, "servicio", "Servicio");
+			Encabezado(dgvHistorial, "mecanico", "Mecanico");
+			Encabezado(dgvHistorial, "fecha", "Fecha");
+			Encabezado(dgvHistorial, "fecha_ingreso", "Ingreso");
+			Encabezado(dgvHistorial, "fecha_entrega", "Entrega");
+			Encabezado(dgvHistorial, "kilometraje", "Kilometraje");
+			Encabezado(dgvHistorial, "estado", "Estado");
+			Encabezado(dgvHistorial, "total", "Total");
+			Encabezado(dgvHistorial, "descripcion", "Problema");
+			dgvHistorial->AutoResizeColumns(System::Windows::Forms::DataGridViewAutoSizeColumnsMode::DisplayedCells);
+		}
+
+		void FormatearDetalle()
+		{
+			OcultarColumna(dgvDetalle, "id_detalle");
+			Encabezado(dgvDetalle, "repuesto", "Repuesto");
+			Encabezado(dgvDetalle, "marca", "Marca");
+			Encabezado(dgvDetalle, "cantidad", "Cantidad");
+			Encabezado(dgvDetalle, "descripcion_trabajo", "Trabajo realizado");
+			Encabezado(dgvDetalle, "costo_mano_obra", "Mano de obra");
+			Encabezado(dgvDetalle, "observacion", "Observacion");
+			Encabezado(dgvDetalle, "fecha", "Fecha");
+			Encabezado(dgvDetalle, "subtotal", "Subtotal");
+			dgvDetalle->AutoResizeColumns(System::Windows::Forms::DataGridViewAutoSizeColumnsMode::DisplayedCells);
+		}
+
 		void ListarHistorial(String^ buscar)
 		{
 			MySqlConnection^ cn = Conexion::ObtenerConexion();
@@ -169,6 +223,7 @@ namespace TallerMecanico {
 				DataTable^ dt = gcnew DataTable();
 				da->Fill(dt);
 				dgvHistorial->DataSource = dt;
+				FormatearHistorial();
 			}
 			catch (Exception^ ex)
 			{
@@ -198,6 +253,7 @@ namespace TallerMecanico {
 				DataTable^ dt = gcnew DataTable();
 				da->Fill(dt);
 				dgvDetalle->DataSource = dt;
+				FormatearDetalle();
 			}
 			catch (Exception^ ex)
 			{
@@ -240,4 +296,3 @@ namespace TallerMecanico {
 		}
 	};
 }
-
