@@ -1,5 +1,6 @@
 #pragma once
 #include "Conexion.h"
+#include "ControladorTaller.h"
 
 namespace TallerMecanico {
 
@@ -255,6 +256,8 @@ namespace TallerMecanico {
 	private:
 		System::Void FormFacturacion_Load(System::Object^ sender, System::EventArgs^ e)
 		{
+			ControladorTaller^ controlador = gcnew ControladorTaller();
+			controlador->CrearTablaFacturasSiNoExiste();
 			CargarServiciosFacturables();
 			ListarFacturas();
 		}
@@ -533,4 +536,3 @@ namespace TallerMecanico {
 		}
 	};
 }
-

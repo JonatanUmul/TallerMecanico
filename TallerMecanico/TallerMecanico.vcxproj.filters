@@ -13,6 +13,21 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Formularios">
+      <UniqueIdentifier>{716DB9D5-CB06-4B7C-8F3D-C2D1B3431197}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Conexion">
+      <UniqueIdentifier>{33FABE6A-CED3-4821-A8C0-82695A30ECD5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Clases">
+      <UniqueIdentifier>{634D3BA2-65CB-40A3-A9A4-11C2A6DD99E2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Controladores">
+      <UniqueIdentifier>{DCE3D854-4A4E-48AA-ABAD-DE3621DB5D56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts">
+      <UniqueIdentifier>{7861ED86-A8FC-4F06-8A39-643A9C58F5AC}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -21,37 +36,60 @@
     <ClCompile Include="FormClientes.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="ConexionBD.cpp">
+      <Filter>Conexion</Filter>
+    </ClCompile>
+    <ClCompile Include="ControladorTaller.cpp">
+      <Filter>Controladores</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MenuPrincipal.h">
-      <Filter>Archivos de encabezado</Filter>
+      <Filter>Formularios</Filter>
     </ClInclude>
     <ClInclude Include="Conexion.h">
-      <Filter>Archivos de encabezado</Filter>
+      <Filter>Conexion</Filter>
     </ClInclude>
     <ClInclude Include="FormClientes.h">
-      <Filter>Archivos de encabezado</Filter>
+      <Filter>Formularios</Filter>
     </ClInclude>
     <ClInclude Include="FormVehiculos.h">
-      <Filter>Archivos de encabezado</Filter>
+      <Filter>Formularios</Filter>
     </ClInclude>
     <ClInclude Include="FormMecanicos.h">
-      <Filter>Archivos de encabezado</Filter>
+      <Filter>Formularios</Filter>
     </ClInclude>
     <ClInclude Include="FormRepuestos.h">
-      <Filter>Archivos de encabezado</Filter>
+      <Filter>Formularios</Filter>
     </ClInclude>
     <ClInclude Include="FormTipoServicio.h">
-      <Filter>Archivos de encabezado</Filter>
+      <Filter>Formularios</Filter>
     </ClInclude>
     <ClInclude Include="FormRecepcion.h">
-      <Filter>Archivos de encabezado</Filter>
+      <Filter>Formularios</Filter>
     </ClInclude>
     <ClInclude Include="FormHistorial.h">
-      <Filter>Archivos de encabezado</Filter>
+      <Filter>Formularios</Filter>
     </ClInclude>
     <ClInclude Include="FormFacturacion.h">
-      <Filter>Archivos de encabezado</Filter>
+      <Filter>Formularios</Filter>
     </ClInclude>
+    <ClInclude Include="ControladorTaller.h">
+      <Filter>Controladores</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfiguracionApp.h">
+      <Filter>Conexion</Filter>
+    </ClInclude>
+    <ClInclude Include="ConexionBD.h">
+      <Filter>Conexion</Filter>
+    </ClInclude>
+    <ClInclude Include="ClasesModelo.h">
+      <Filter>Clases</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="actualizar_bd_taller.sql">
+      <Filter>Scripts</Filter>
+    </None>
   </ItemGroup>
 </Project>

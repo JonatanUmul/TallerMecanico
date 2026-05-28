@@ -123,6 +123,8 @@
   <ItemGroup>
     <ClCompile Include="FormClientes.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ConexionBD.cpp" />
+    <ClCompile Include="ControladorTaller.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Conexion.h" />
@@ -139,6 +141,10 @@
     <ClInclude Include="FormRecepcion.h" />
     <ClInclude Include="FormHistorial.h" />
     <ClInclude Include="FormFacturacion.h" />
+    <ClInclude Include="ConfiguracionApp.h" />
+    <ClInclude Include="ConexionBD.h" />
+    <ClInclude Include="ClasesModelo.h" />
+    <ClInclude Include="ControladorTaller.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="FormClientes.resx">
@@ -147,6 +153,9 @@
     <EmbeddedResource Include="MenuPrincipal.resx">
       <DependentUpon>MenuPrincipal.h</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="actualizar_bd_taller.sql" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

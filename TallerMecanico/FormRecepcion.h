@@ -512,8 +512,8 @@ namespace TallerMecanico {
 						return;
 					}
 
-					String^ url = "https://evolutioneco.ecofiltro.net/message/sendText/jonatan_perosonal";
-					String^ apiKey = "59B80597F3B1-4A32-BCC7-C256251BDF9E";
+					String^ url = ConfiguracionApp::WhatsAppUrl();
+					String^ apiKey = ConfiguracionApp::WhatsAppApiKey();
 					String^ numero = FormatearNumeroWhatsApp(telefono);
 					String^ texto = "Hola " + cliente + ", le informamos que su vehiculo placa " + placa +
 						" ya esta LISTO para entrega. Total: Q" + total + ". Taller Mecanico.";
