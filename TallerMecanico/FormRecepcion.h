@@ -225,7 +225,7 @@ namespace TallerMecanico {
 			this->btnCrearOrden->Size = System::Drawing::Size(135, 38);
 			this->btnCrearOrden->Click += gcnew System::EventHandler(this, &FormRecepcion::btnCrearOrden_Click);
 
-			this->btnActualizarEstado->Text = L"Actualizar estado";
+			this->btnActualizarEstado->Text = L"Actualizar orden";
 			this->btnActualizarEstado->Location = System::Drawing::Point(180, 415);
 			this->btnActualizarEstado->Size = System::Drawing::Size(145, 38);
 			this->btnActualizarEstado->Click += gcnew System::EventHandler(this, &FormRecepcion::btnActualizarEstado_Click);
@@ -734,6 +734,31 @@ namespace TallerMecanico {
 			return Convert::ToInt32(txtKilometraje->Text);
 		}
 
+		void SeleccionarComboPorValor(System::Windows::Forms::ComboBox^ combo, String^ valor)
+		{
+			if (String::IsNullOrWhiteSpace(valor) || combo->DataSource == nullptr) return;
+			try
+			{
+				combo->SelectedValue = Convert::ToInt32(valor);
+			}
+			catch (Exception^)
+			{
+			}
+		}
+
+		void SeleccionarFechaDesdeFila(System::Windows::Forms::DataGridViewRow^ fila)
+		{
+			if (!fila->DataGridView->Columns->Contains("fecha")) return;
+			Object^ valor = fila->Cells["fecha"]->Value;
+			if (valor == nullptr || valor == System::DBNull::Value) return;
+
+			DateTime fecha;
+			if (DateTime::TryParse(valor->ToString(), fecha))
+			{
+				dtpFecha->Value = fecha;
+			}
+		}
+
 		void RecalcularTotal(int idServicio, MySqlConnection^ cn)
 		{
 			String^ sqlTotal =
@@ -825,6 +850,8 @@ namespace TallerMecanico {
 				System::Windows::Forms::MessageBox::Show("Seleccione una orden de servicio.");
 				return;
 			}
+			if (!ValidarOrden()) return;
+
 			MySqlConnection^ cn = Conexion::ObtenerConexion();
 			try
 			{
@@ -832,12 +859,29 @@ namespace TallerMecanico {
 				int idServicio = Convert::ToInt32(txtIdServicio->Text);
 				String^ estadoAnterior = ObtenerEstadoAnterior(cn, idServicio);
 				String^ sql =
-					"UPDATE servicios SET estado=@estado, fecha_entrega=CASE WHEN @estado='ENTREGADO' THEN NOW() ELSE fecha_entrega END "
+					"UPDATE servicios SET "
+					"id_cliente=@cliente, "
+					"id_vehiculo=@vehiculo, "
+					"id_tipo_servicio=@tipo, "
+					"id_mecanico=@mecanico, "
+					"fecha=@fecha, "
+					"kilometraje=@km, "
+					"descripcion=@descripcion, "
+					"estado=@estado, "
+					"fecha_entrega=CASE WHEN @estado='ENTREGADO' THEN NOW() ELSE fecha_entrega END "
 					"WHERE id_servicio=@id";
 				MySqlCommand^ cmd = gcnew MySqlCommand(sql, cn);
+				cmd->Parameters->AddWithValue("@cliente", cmbCliente->SelectedValue);
+				cmd->Parameters->AddWithValue("@vehiculo", cmbVehiculo->SelectedValue);
+				cmd->Parameters->AddWithValue("@tipo", cmbTipoServicio->SelectedValue);
+				cmd->Parameters->AddWithValue("@mecanico", cmbMecanico->SelectedValue);
+				cmd->Parameters->AddWithValue("@fecha", dtpFecha->Value);
+				cmd->Parameters->AddWithValue("@km", ObtenerKilometraje());
+				cmd->Parameters->AddWithValue("@descripcion", txtDescripcion->Text);
 				cmd->Parameters->AddWithValue("@estado", cmbEstado->Text);
 				cmd->Parameters->AddWithValue("@id", idServicio);
 				cmd->ExecuteNonQuery();
+				RecalcularTotal(idServicio, cn);
 
 				String^ sqlVehiculo = "UPDATE vehiculos v INNER JOIN servicios s ON v.id_vehiculo=s.id_vehiculo SET v.estado=@estado WHERE s.id_servicio=@id";
 				MySqlCommand^ cmdVehiculo = gcnew MySqlCommand(sqlVehiculo, cn);
@@ -845,8 +889,9 @@ namespace TallerMecanico {
 				cmdVehiculo->Parameters->AddWithValue("@id", idServicio);
 				cmdVehiculo->ExecuteNonQuery();
 
-				System::Windows::Forms::MessageBox::Show("Estado actualizado correctamente.");
+				System::Windows::Forms::MessageBox::Show("Orden actualizada correctamente.");
 				ListarServicios(txtBuscar->Text);
+				ListarDetalle(idServicio);
 				if (cmbEstado->Text == "LISTO" && estadoAnterior != "LISTO")
 				{
 					EnviarWhatsAppListo(idServicio);
@@ -854,7 +899,7 @@ namespace TallerMecanico {
 			}
 			catch (Exception^ ex)
 			{
-				System::Windows::Forms::MessageBox::Show("Error al actualizar estado: " + ex->Message);
+				System::Windows::Forms::MessageBox::Show("Error al actualizar orden: " + ex->Message);
 			}
 			finally
 			{
@@ -929,19 +974,25 @@ namespace TallerMecanico {
 			if (e->RowIndex >= 0)
 			{
 				System::Windows::Forms::DataGridViewRow^ fila = dgvServicios->Rows[e->RowIndex];
-				txtIdServicio->Text = ValorCelda(fila, "id_servicio");
-				if (!String::IsNullOrWhiteSpace(ValorCelda(fila, "id_cliente")))
+				cargandoCombos = true;
+				try
 				{
-					cmbCliente->SelectedValue = Convert::ToInt32(ValorCelda(fila, "id_cliente"));
+					txtIdServicio->Text = ValorCelda(fila, "id_servicio");
+					SeleccionarComboPorValor(cmbCliente, ValorCelda(fila, "id_cliente"));
 					CargarVehiculosPorCliente();
+					SeleccionarComboPorValor(cmbVehiculo, ValorCelda(fila, "id_vehiculo"));
+					SeleccionarComboPorValor(cmbTipoServicio, ValorCelda(fila, "id_tipo_servicio"));
+					SeleccionarComboPorValor(cmbMecanico, ValorCelda(fila, "id_mecanico"));
+					SeleccionarFechaDesdeFila(fila);
+					txtKilometraje->Text = ValorCelda(fila, "kilometraje");
+					txtDescripcion->Text = ValorCelda(fila, "descripcion");
+					if (!String::IsNullOrWhiteSpace(ValorCelda(fila, "estado"))) cmbEstado->Text = ValorCelda(fila, "estado");
+					ListarDetalle(Convert::ToInt32(txtIdServicio->Text));
 				}
-				if (!String::IsNullOrWhiteSpace(ValorCelda(fila, "id_vehiculo"))) cmbVehiculo->SelectedValue = Convert::ToInt32(ValorCelda(fila, "id_vehiculo"));
-				if (!String::IsNullOrWhiteSpace(ValorCelda(fila, "id_tipo_servicio"))) cmbTipoServicio->SelectedValue = Convert::ToInt32(ValorCelda(fila, "id_tipo_servicio"));
-				if (!String::IsNullOrWhiteSpace(ValorCelda(fila, "id_mecanico"))) cmbMecanico->SelectedValue = Convert::ToInt32(ValorCelda(fila, "id_mecanico"));
-				txtKilometraje->Text = ValorCelda(fila, "kilometraje");
-				txtDescripcion->Text = ValorCelda(fila, "descripcion");
-				if (!String::IsNullOrWhiteSpace(ValorCelda(fila, "estado"))) cmbEstado->Text = ValorCelda(fila, "estado");
-				ListarDetalle(Convert::ToInt32(txtIdServicio->Text));
+				finally
+				{
+					cargandoCombos = false;
+				}
 			}
 		}
 	};

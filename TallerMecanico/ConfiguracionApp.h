@@ -43,7 +43,7 @@ public:
 
 	static String^ WhatsAppUrl()
 	{
-		return "https://evolutioneco.ecofiltro.net/message/sendText/jonatan_perosonal";
+		return "https://evolutioneco.ecofiltro.net/message/sendText/jonatan_personal";
 	}
 
 	static String^ WhatsAppApiKey()
@@ -51,4 +51,3 @@ public:
 		return "59B80597F3B1-4A32-BCC7-C256251BDF9E";
 	}
 };
-
