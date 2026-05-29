@@ -43,7 +43,7 @@ public:
 
 	static String^ WhatsAppUrl()
 	{
-		return "https://evolutioneco.ecofiltro.net/message/sendText/jonatan_personal";
+		return "https://evolutioneco.ecofiltro.net/message/sendText/jonatan_perosonal";
 	}
 
 	static String^ WhatsAppApiKey()
