@@ -17,7 +17,7 @@ public:
 
 	static String^ UsuarioBD()
 	{
-		return "admin";
+		return "tallerMecanico";
 	}
 
 	static String^ ClaveBD()
