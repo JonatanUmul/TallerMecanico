@@ -12,7 +12,7 @@ ControladorTaller::~ControladorTaller()
 		db->CerrarConexion();
 	}
 }
-
+//Clientes
 DataTable^ ControladorTaller::ListarClientes()
 {
 	return db->EjecutarConsultaTabla(
@@ -73,6 +73,7 @@ bool ControladorTaller::EliminarCliente(int idCliente)
 	return db->EjecutarIUD(cmd) > 0;
 }
 
+//Vehiculos
 DataTable^ ControladorTaller::ListarVehiculos()
 {
 	return db->EjecutarConsultaTabla(
@@ -83,6 +84,7 @@ DataTable^ ControladorTaller::ListarVehiculos()
 	);
 }
 
+//Mecanicos
 DataTable^ ControladorTaller::ListarMecanicos()
 {
 	return db->EjecutarConsultaTabla(
@@ -91,6 +93,7 @@ DataTable^ ControladorTaller::ListarMecanicos()
 	);
 }
 
+//Reuestos
 DataTable^ ControladorTaller::ListarRepuestos()
 {
 	return db->EjecutarConsultaTabla(
@@ -98,6 +101,8 @@ DataTable^ ControladorTaller::ListarRepuestos()
 		"FROM repuestos ORDER BY id_repuesto DESC"
 	);
 }
+
+//Tipo de servicos
 
 DataTable^ ControladorTaller::ListarTiposServicio()
 {
@@ -126,6 +131,7 @@ DataTable^ ControladorTaller::ListarServicios(String^ buscar)
 	return db->EjecutarConsultaTabla(cmd);
 }
 
+//Facturas
 DataTable^ ControladorTaller::ListarFacturas()
 {
 	return db->EjecutarConsultaTabla(

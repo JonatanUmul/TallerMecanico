@@ -77,23 +77,25 @@ namespace TallerMecanico {
 			this->lblBuscar->AutoSize = true;
 
 			this->txtBuscar->Location = System::Drawing::Point(300, 66);
-			this->txtBuscar->Size = System::Drawing::Size(410, 25);
+			this->txtBuscar->Size = System::Drawing::Size(320, 25);
 			this->txtBuscar->Anchor = (System::Windows::Forms::AnchorStyles)((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left));
+			this->txtBuscar->TextChanged += gcnew System::EventHandler(this, &FormHistorial::txtBuscar_TextChanged);
+			this->txtBuscar->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &FormHistorial::txtBuscar_KeyDown);
 
 			this->btnBuscar->Text = L"Buscar";
-			this->btnBuscar->Location = System::Drawing::Point(730, 62);
+			this->btnBuscar->Location = System::Drawing::Point(640, 62);
 			this->btnBuscar->Size = System::Drawing::Size(110, 34);
 			this->btnBuscar->Anchor = (System::Windows::Forms::AnchorStyles)((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left));
 			this->btnBuscar->Click += gcnew System::EventHandler(this, &FormHistorial::btnBuscar_Click);
 
 			this->btnLimpiar->Text = L"Limpiar";
-			this->btnLimpiar->Location = System::Drawing::Point(850, 62);
+			this->btnLimpiar->Location = System::Drawing::Point(640, 62);
 			this->btnLimpiar->Size = System::Drawing::Size(110, 34);
 			this->btnLimpiar->Anchor = (System::Windows::Forms::AnchorStyles)((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left));
 			this->btnLimpiar->Click += gcnew System::EventHandler(this, &FormHistorial::btnLimpiar_Click);
 
 			this->btnRegresar->Text = L"Regresar al menu";
-			this->btnRegresar->Location = System::Drawing::Point(970, 62);
+			this->btnRegresar->Location = System::Drawing::Point(760, 62);
 			this->btnRegresar->Size = System::Drawing::Size(150, 34);
 			this->btnRegresar->Anchor = (System::Windows::Forms::AnchorStyles)((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left));
 			this->btnRegresar->Click += gcnew System::EventHandler(this, &FormHistorial::btnRegresar_Click);
@@ -126,7 +128,6 @@ namespace TallerMecanico {
 			this->panelSuperior->Controls->Add(this->lblTitulo);
 			this->panelSuperior->Controls->Add(this->lblBuscar);
 			this->panelSuperior->Controls->Add(this->txtBuscar);
-			this->panelSuperior->Controls->Add(this->btnBuscar);
 			this->panelSuperior->Controls->Add(this->btnLimpiar);
 			this->panelSuperior->Controls->Add(this->btnRegresar);
 			this->panelCentral->Controls->Add(this->dgvHistorial);
@@ -268,6 +269,20 @@ namespace TallerMecanico {
 		System::Void btnBuscar_Click(System::Object^ sender, System::EventArgs^ e)
 		{
 			ListarHistorial(txtBuscar->Text);
+		}
+
+		System::Void txtBuscar_TextChanged(System::Object^ sender, System::EventArgs^ e)
+		{
+			ListarHistorial(txtBuscar->Text);
+		}
+
+		System::Void txtBuscar_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e)
+		{
+			if (e->KeyCode == System::Windows::Forms::Keys::Enter)
+			{
+				ListarHistorial(txtBuscar->Text);
+				e->SuppressKeyPress = true;
+			}
 		}
 
 		System::Void btnLimpiar_Click(System::Object^ sender, System::EventArgs^ e)

@@ -168,13 +168,15 @@ namespace TallerMecanico {
 			this->lblBuscar->Location = System::Drawing::Point(20, 35);
 			this->lblBuscar->AutoSize = true;
 			this->txtBuscar->Location = System::Drawing::Point(20, 65);
-			this->txtBuscar->Size = System::Drawing::Size(500, 25);
-			this->txtBuscar->Anchor = (System::Windows::Forms::AnchorStyles)(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left) | System::Windows::Forms::AnchorStyles::Right));
+			this->txtBuscar->Size = System::Drawing::Size(260, 25);
+			this->txtBuscar->Anchor = (System::Windows::Forms::AnchorStyles)((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left));
+			this->txtBuscar->TextChanged += gcnew System::EventHandler(this, &FormClientes::txtBuscar_TextChanged);
+			this->txtBuscar->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &FormClientes::txtBuscar_KeyDown);
 
 			this->btnBuscar->Text = L"Buscar";
-			this->btnBuscar->Location = System::Drawing::Point(540, 61);
-			this->btnBuscar->Size = System::Drawing::Size(120, 34);
-			this->btnBuscar->Anchor = (System::Windows::Forms::AnchorStyles)((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
+			this->btnBuscar->Location = System::Drawing::Point(300, 61);
+			this->btnBuscar->Size = System::Drawing::Size(110, 34);
+			this->btnBuscar->Anchor = (System::Windows::Forms::AnchorStyles)((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left));
 			this->btnBuscar->Click += gcnew System::EventHandler(this, &FormClientes::btnBuscar_Click);
 
 			this->dgvClientes->Location = System::Drawing::Point(20, 115);
@@ -211,7 +213,6 @@ namespace TallerMecanico {
 			this->panelIzquierdo->Controls->Add(this->btnRegresar);
 			this->panelDerecho->Controls->Add(this->lblBuscar);
 			this->panelDerecho->Controls->Add(this->txtBuscar);
-			this->panelDerecho->Controls->Add(this->btnBuscar);
 			this->panelDerecho->Controls->Add(this->dgvClientes);
 			this->Controls->Add(this->panelDerecho);
 			this->Controls->Add(this->panelIzquierdo);
@@ -266,6 +267,42 @@ namespace TallerMecanico {
 			catch (Exception^ ex)
 			{
 				System::Windows::Forms::MessageBox::Show("Error al listar clientes: " + ex->Message);
+			}
+			finally
+			{
+				if (cn->State == ConnectionState::Open) cn->Close();
+			}
+		}
+
+		void BuscarClientes()
+		{
+			String^ buscar = txtBuscar->Text->Trim();
+			if (String::IsNullOrWhiteSpace(buscar))
+			{
+				ListarClientes();
+				return;
+			}
+
+			MySqlConnection^ cn = Conexion::ObtenerConexion();
+			try
+			{
+				cn->Open();
+				String^ sql =
+					"SELECT id_cliente, nit, nombre, edad, direccion, correo, telefono "
+					"FROM clientes "
+					"WHERE nombre LIKE @buscar OR CAST(nit AS CHAR) LIKE @buscar "
+					"ORDER BY id_cliente DESC";
+				MySqlCommand^ cmd = gcnew MySqlCommand(sql, cn);
+				cmd->Parameters->AddWithValue("@buscar", "%" + buscar + "%");
+				MySqlDataAdapter^ da = gcnew MySqlDataAdapter(cmd);
+				DataTable^ dt = gcnew DataTable();
+				da->Fill(dt);
+				dgvClientes->DataSource = dt;
+				FormatearTabla();
+			}
+			catch (Exception^ ex)
+			{
+				System::Windows::Forms::MessageBox::Show("Error al buscar: " + ex->Message);
 			}
 			finally
 			{
@@ -411,26 +448,20 @@ namespace TallerMecanico {
 
 		System::Void btnBuscar_Click(System::Object^ sender, System::EventArgs^ e)
 		{
-			MySqlConnection^ cn = Conexion::ObtenerConexion();
-			try
+			BuscarClientes();
+		}
+
+		System::Void txtBuscar_TextChanged(System::Object^ sender, System::EventArgs^ e)
+		{
+			BuscarClientes();
+		}
+
+		System::Void txtBuscar_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e)
+		{
+			if (e->KeyCode == System::Windows::Forms::Keys::Enter)
 			{
-				cn->Open();
-				String^ sql = "SELECT id_cliente, nit, nombre, edad, direccion, correo, telefono FROM clientes WHERE nombre LIKE @buscar OR CAST(nit AS CHAR) LIKE @buscar ORDER BY id_cliente DESC";
-				MySqlCommand^ cmd = gcnew MySqlCommand(sql, cn);
-				cmd->Parameters->AddWithValue("@buscar", "%" + txtBuscar->Text + "%");
-				MySqlDataAdapter^ da = gcnew MySqlDataAdapter(cmd);
-				DataTable^ dt = gcnew DataTable();
-				da->Fill(dt);
-				dgvClientes->DataSource = dt;
-				FormatearTabla();
-			}
-			catch (Exception^ ex)
-			{
-				System::Windows::Forms::MessageBox::Show("Error al buscar: " + ex->Message);
-			}
-			finally
-			{
-				if (cn->State == ConnectionState::Open) cn->Close();
+				BuscarClientes();
+				e->SuppressKeyPress = true;
 			}
 		}
 

@@ -128,13 +128,15 @@ namespace TallerMecanico {
 			this->lblBuscar->Location = System::Drawing::Point(20, 35);
 			this->lblBuscar->AutoSize = true;
 			this->txtBuscar->Location = System::Drawing::Point(20, 65);
-			this->txtBuscar->Size = System::Drawing::Size(500, 25);
-			this->txtBuscar->Anchor = (System::Windows::Forms::AnchorStyles)(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left) | System::Windows::Forms::AnchorStyles::Right));
+			this->txtBuscar->Size = System::Drawing::Size(260, 25);
+			this->txtBuscar->Anchor = (System::Windows::Forms::AnchorStyles)((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left));
+			this->txtBuscar->TextChanged += gcnew System::EventHandler(this, &FormTipoServicio::txtBuscar_TextChanged);
+			this->txtBuscar->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &FormTipoServicio::txtBuscar_KeyDown);
 
 			this->btnBuscar->Text = L"Buscar";
-			this->btnBuscar->Location = System::Drawing::Point(540, 61);
-			this->btnBuscar->Size = System::Drawing::Size(120, 34);
-			this->btnBuscar->Anchor = (System::Windows::Forms::AnchorStyles)((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
+			this->btnBuscar->Location = System::Drawing::Point(300, 61);
+			this->btnBuscar->Size = System::Drawing::Size(110, 34);
+			this->btnBuscar->Anchor = (System::Windows::Forms::AnchorStyles)((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left));
 			this->btnBuscar->Click += gcnew System::EventHandler(this, &FormTipoServicio::btnBuscar_Click);
 
 			this->dgvTiposServicio->Location = System::Drawing::Point(20, 115);
@@ -163,7 +165,6 @@ namespace TallerMecanico {
 			this->panelIzquierdo->Controls->Add(this->btnRegresar);
 			this->panelDerecho->Controls->Add(this->lblBuscar);
 			this->panelDerecho->Controls->Add(this->txtBuscar);
-			this->panelDerecho->Controls->Add(this->btnBuscar);
 			this->panelDerecho->Controls->Add(this->dgvTiposServicio);
 			this->Controls->Add(this->panelDerecho);
 			this->Controls->Add(this->panelIzquierdo);
@@ -350,6 +351,20 @@ namespace TallerMecanico {
 			finally
 			{
 				if (cn->State == ConnectionState::Open) cn->Close();
+			}
+		}
+
+		System::Void txtBuscar_TextChanged(System::Object^ sender, System::EventArgs^ e)
+		{
+			btnBuscar_Click(sender, e);
+		}
+
+		System::Void txtBuscar_KeyDown(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e)
+		{
+			if (e->KeyCode == System::Windows::Forms::Keys::Enter)
+			{
+				btnBuscar_Click(sender, System::EventArgs::Empty);
+				e->SuppressKeyPress = true;
 			}
 		}
 
